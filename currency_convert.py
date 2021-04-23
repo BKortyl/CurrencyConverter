@@ -2,6 +2,7 @@
 import requests
 
 
+# TODO: Add a shortcut for most often checked currencies.
 def menu():
     while True:
         choice = input("'calc' for calculator, 'list' for a list of current exchange rates, 'quit' to quit: ")
@@ -57,4 +58,9 @@ def cache_rates():
     return cache
 
 
-menu()
+def main():
+    menu()
+
+
+if __name__ == '__main__':
+    main()
