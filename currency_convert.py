@@ -2,14 +2,16 @@
 import requests
 
 
-# TODO: Add a shortcut for most often checked currencies, take care possible input errors in list.
+# TODO: Take care possible input errors in list.
 def menu():
     while True:
-        choice = input("'calc' for calculator, 'list' for a list of current exchange rates, 'quit' to quit: ")
+        choice = input("'calc' - calculator, 'list' - list of current exchange rates, 'tea' - faves, 'quit' - quit: ")
         if choice == 'calc':
             calculate_exchange(cache_rates())
         elif choice == 'list':
             exchange_rates(cache_rates())
+        elif choice == 'tea':
+            tea_currency_list(cache_rates())
         elif choice == 'quit':
             quit()
         else:
@@ -63,6 +65,13 @@ def exchange_rates(cache):
             flagged_currency[currency_code.upper()] = cache[currency_code.upper()]
         else:
             print('Wrong input')
+
+
+def tea_currency_list(cache):
+    flagged_currency = {'USD': cache['USD'], 'EUR': cache['EUR'], 'GBP': cache['GBP'], 'JPY': cache['JPY'],
+                        'TWD': cache['TWD'], 'HKD': cache['HKD'], 'CNY': cache['CNY'], 'MYR': cache['MYR']}
+    for currency in flagged_currency:
+        print(f'1 {currency} : {round(flagged_currency[currency], 2)} PLN')
 
 
 def cache_rates():
