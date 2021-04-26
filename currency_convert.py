@@ -2,38 +2,50 @@
 import requests
 
 
-# TODO: Add a shortcut for most often checked currencies, take care possible input errors in calc and list.
+# TODO: Add a shortcut for most often checked currencies, take care possible input errors in list.
 def menu():
     while True:
         choice = input("'calc' for calculator, 'list' for a list of current exchange rates, 'quit' to quit: ")
         if choice == 'calc':
-            calculate_exchange()
+            calculate_exchange(cache_rates())
         elif choice == 'list':
             exchange_rates(cache_rates())
-            # TODO: Consider rework to request single exchange rates as user needs them, instead of caching everything.
         elif choice == 'quit':
             quit()
         else:
             print('Wrong input')
 
 
-def calculate_exchange():  # TODO: Doesn't work for PLN, predict and take care of possible errors.
+def calculate_exchange(cache):
     currency_in = input('Please enter the code of currency that you have: ')
-    currency_amount = float(input('Please, enter the amount of currency you have: '))
-    currency_out = input('Please enter the code of currency that you want to exchange to: ')
-    if len(currency_in) != 3 or not currency_in.isalpha() or not check_currency_code(cache_rates(), currency_in):
-        print('Wrong input.')
-        calculate_exchange()
-    elif currency_in.upper() == 'PLN':
+    if currency_in.upper() == 'PLN':
         currency_in_rate = 1
+    elif len(currency_in) != 3 or not currency_in.isalpha() or currency_in.upper() not in cache:
+        print('Wrong input.')
+        calculate_exchange(cache)
     else:
         request_in = requests.get(f'http://api.nbp.pl/api/exchangerates/rates/a/{currency_in}/?format=json')
         data_in = request_in.json()
         currency_in_rate = data_in['rates'][0]['mid']
 
-    request_out = requests.get(f'http://api.nbp.pl/api/exchangerates/rates/a/{currency_out}/?format=json')
-    data_out = request_out.json()
-    result = round(currency_amount * currency_in_rate / data_out['rates'][0]['mid'], 2)
+    currency_amount = input('Please, enter the amount of currency you have: ')
+    try:
+        currency_amount = float(currency_amount)
+    except ValueError:
+        print('Wrong Input. Please enter a number.')
+        calculate_exchange(cache)
+
+    currency_out = input('Please enter the code of currency that you want to exchange to: ')
+    if currency_out.upper() == 'PLN':
+        currency_out_rate = 1
+    elif len(currency_out) != 3 or not currency_out.isalpha() or currency_out.upper() not in cache:
+        print('Wrong input.')
+        calculate_exchange(cache)
+    else:
+        request_out = requests.get(f'http://api.nbp.pl/api/exchangerates/rates/a/{currency_out}/?format=json')
+        data_out = request_out.json()
+        currency_out_rate = data_out['rates'][0]['mid']
+    result = round(currency_amount * currency_in_rate / currency_out_rate, 2)
     print(f'I will get {result} {currency_out.upper()} from the sale of {currency_amount} {currency_in.upper()}.')
 
 
@@ -64,14 +76,6 @@ def cache_rates():
     for currency in table_b_json[0]['rates']:
         cache[currency['code']] = currency['mid']
     return cache
-
-
-def check_currency_code(currency_dict, input_code):
-    check = False
-    for code in currency_dict:
-        if currency_dict[code] == input_code:
-            check = True
-    return check
 
 
 def main():
