@@ -2,7 +2,7 @@
 import requests
 
 
-# TODO: Add a shortcut for most often checked currencies.
+# TODO: Add a shortcut for most often checked currencies, take care possible input errors in calc and list.
 def menu():
     while True:
         choice = input("'calc' for calculator, 'list' for a list of current exchange rates, 'quit' to quit: ")
@@ -21,11 +21,19 @@ def calculate_exchange():  # TODO: Doesn't work for PLN, predict and take care o
     currency_in = input('Please enter the code of currency that you have: ')
     currency_amount = float(input('Please, enter the amount of currency you have: '))
     currency_out = input('Please enter the code of currency that you want to exchange to: ')
-    request_in = requests.get(f'http://api.nbp.pl/api/exchangerates/rates/a/{currency_in}/?format=json')
-    data_in = request_in.json()
+    if len(currency_in) != 3 or not currency_in.isalpha() or not check_currency_code(cache_rates(), currency_in):
+        print('Wrong input.')
+        calculate_exchange()
+    elif currency_in.upper() == 'PLN':
+        currency_in_rate = 1
+    else:
+        request_in = requests.get(f'http://api.nbp.pl/api/exchangerates/rates/a/{currency_in}/?format=json')
+        data_in = request_in.json()
+        currency_in_rate = data_in['rates'][0]['mid']
+
     request_out = requests.get(f'http://api.nbp.pl/api/exchangerates/rates/a/{currency_out}/?format=json')
     data_out = request_out.json()
-    result = round(currency_amount * data_in['rates'][0]['mid'] / data_out['rates'][0]['mid'], 2)
+    result = round(currency_amount * currency_in_rate / data_out['rates'][0]['mid'], 2)
     print(f'I will get {result} {currency_out.upper()} from the sale of {currency_amount} {currency_in.upper()}.')
 
 
@@ -56,6 +64,14 @@ def cache_rates():
     for currency in table_b_json[0]['rates']:
         cache[currency['code']] = currency['mid']
     return cache
+
+
+def check_currency_code(currency_dict, input_code):
+    check = False
+    for code in currency_dict:
+        if currency_dict[code] == input_code:
+            check = True
+    return check
 
 
 def main():
