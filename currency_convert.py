@@ -18,10 +18,12 @@ def menu():
 
 
 def calculate_exchange(cache):
-    currency_in = input('Please enter the code of currency that you have: ')
-    if currency_in.upper() == 'PLN':
+    currency_in = input("Please enter the code of currency that you have, 'quit' to quit: ")
+    if currency_in == 'quit':
+        quit()
+    elif currency_in.upper() == 'PLN':
         currency_in_rate = 1
-    elif len(currency_in) != 3 or not currency_in.isalpha() or currency_in.upper() not in cache:
+    elif currency_in.upper() not in cache:
         print('Wrong input.')
         calculate_exchange(cache)
     else:
@@ -29,17 +31,21 @@ def calculate_exchange(cache):
         data_in = request_in.json()
         currency_in_rate = data_in['rates'][0]['mid']
 
-    currency_amount = input('Please, enter the amount of currency you have: ')
+    currency_amount = input("Please, enter the amount of currency you have, 'quit' to quit: ")
+    if currency_amount == 'quit':
+        quit()
     try:
         currency_amount = float(currency_amount)
     except ValueError:
         print('Wrong Input. Please enter a number.')
         calculate_exchange(cache)
 
-    currency_out = input('Please enter the code of currency that you want to exchange to: ')
-    if currency_out.upper() == 'PLN':
+    currency_out = input("Please enter the code of currency that you want to exchange to, 'quit' to quit: ")
+    if currency_out == 'quit':
+        quit()
+    elif currency_out.upper() == 'PLN':
         currency_out_rate = 1
-    elif len(currency_out) != 3 or not currency_out.isalpha() or currency_out.upper() not in cache:
+    elif currency_out.upper() not in cache:
         print('Wrong input.')
         calculate_exchange(cache)
     else:
