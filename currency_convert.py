@@ -2,7 +2,6 @@
 import requests
 
 
-# TODO: Take care possible input errors in list.
 def menu():
     while True:
         choice = input("'calc' - calculator, 'list' - list of current exchange rates, 'tea' - faves, 'quit' - quit: ")
@@ -58,9 +57,13 @@ def exchange_rates(cache):
         if currency_code == 'quit':
             quit()
         elif currency_code == 'print':
-            print('Current exchange rates:')
-            for currency in flagged_currency:
-                print(f'1 {currency} : {round(flagged_currency[currency], 2)} PLN')
+            if not flagged_currency:
+                print('Please add a currency to the list first.')
+                exchange_rates(cache)
+            else:
+                print('Current exchange rates:')
+                for currency in flagged_currency:
+                    print(f'1 {currency} : {round(flagged_currency[currency], 2)} PLN')
         elif currency_code.upper() in cache:
             flagged_currency[currency_code.upper()] = cache[currency_code.upper()]
         else:
