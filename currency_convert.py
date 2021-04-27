@@ -42,6 +42,9 @@ def calculate_exchange(cache):
     currency_out = input("Please enter the code of currency that you want to exchange to, 'quit' to quit: ")
     if currency_out == 'quit':
         quit()
+    elif currency_out.upper() == currency_in.upper():
+        print('Wrong input.')
+        calculate_exchange(cache)
     elif currency_out.upper() == 'PLN':
         currency_out_rate = 1
     elif currency_out.upper() not in cache:
