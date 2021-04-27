@@ -1,4 +1,3 @@
-# work in progress
 import requests
 
 
