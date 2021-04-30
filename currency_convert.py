@@ -26,9 +26,7 @@ def calculate_exchange(cache):
         print('Wrong input.')
         calculate_exchange(cache)
     else:
-        request_in = requests.get(f'http://api.nbp.pl/api/exchangerates/rates/a/{currency_in}/?format=json')
-        data_in = request_in.json()
-        currency_in_rate = data_in['rates'][0]['mid']
+        currency_in_rate = cache[currency_in.upper()]
 
     currency_amount = input("Please, enter the amount of currency you have, 'quit' to quit: ")
     if currency_amount == 'quit':
@@ -51,9 +49,7 @@ def calculate_exchange(cache):
         print('Wrong input.')
         calculate_exchange(cache)
     else:
-        request_out = requests.get(f'http://api.nbp.pl/api/exchangerates/rates/a/{currency_out}/?format=json')
-        data_out = request_out.json()
-        currency_out_rate = data_out['rates'][0]['mid']
+        currency_out_rate = cache[currency_out.upper()]
     result = round(currency_amount * currency_in_rate / currency_out_rate, 2)
     print(f'I will get {result} {currency_out.upper()} from the sale of {currency_amount} {currency_in.upper()}.')
 
