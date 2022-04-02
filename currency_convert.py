@@ -67,7 +67,7 @@ def exchange_rates(cache):
             else:
                 print('Current exchange rates:')
                 for currency in flagged_currency:
-                    print(f'1 {currency} : {round(flagged_currency[currency], 2)} PLN')
+                    print(f'1 {currency} : {round(flagged_currency[currency], 2):.2f} PLN')
         elif currency_code.upper() in cache:
             flagged_currency[currency_code.upper()] = cache[currency_code.upper()]
         else:
@@ -78,7 +78,7 @@ def tea_currency_list(cache):
     flagged_currency = {'USD': cache['USD'], 'EUR': cache['EUR'], 'GBP': cache['GBP'], 'JPY': cache['JPY'],
                         'TWD': cache['TWD'], 'HKD': cache['HKD'], 'CNY': cache['CNY'], 'MYR': cache['MYR']}
     for currency in flagged_currency:
-        print(f'1 {currency} : {round(flagged_currency[currency], 2)} PLN')
+        print(f'1 {currency} : {round(flagged_currency[currency], 2):.2f} PLN')
 
 
 def cache_rates():
